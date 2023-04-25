@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.coroutineScope
 import com.example.mesibikes.db.Bike
+import com.example.mesibikes.db.BikeStatus
 import com.example.mesibikes.ui.theme.MesiBikesTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -17,12 +18,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //bikeViewModel
-        addBike(Bike("title1", "desc1"))
-        addBike(Bike("title2", "desc2"))
-        addBike(Bike("title3", "desc3"))
-
-
+        addBike(Bike("BAJK 1", BikeStatus.AVAILABLE))
+        addBike(Bike("BAJK 2", BikeStatus.AVAILABLE))
+        addBike(Bike("BAJK 3", BikeStatus.AVAILABLE))
+        addBike(Bike("BAJK 4", BikeStatus.AVAILABLE))
+        addBike(Bike("BAJK 5", BikeStatus.AVAILABLE))
+        addBike(Bike("BAJK 6", BikeStatus.AVAILABLE))
+        addBike(Bike("BAJK 7", BikeStatus.AVAILABLE))
 
 
         setContent {
