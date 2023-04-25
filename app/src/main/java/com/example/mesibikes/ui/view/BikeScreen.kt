@@ -252,8 +252,6 @@ fun ItemBike(bike: Bike) {
 fun OrderScreenPreview() {
     MesiBikesTheme {
         BikeScreen(
-            bikesList,
-
-            ) {}
+            bikesList,) {}
     }
 }

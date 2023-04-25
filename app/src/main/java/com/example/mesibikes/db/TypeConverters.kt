@@ -16,11 +16,11 @@ class UserConverter {
         val id = Integer.parseInt(parts[0])
         val name = parts[1]
         val surname = parts[2]
-        val department: Department = Department.valueOf(parts[3])
+        val department = parts[3]
         val reservationStart = LocalDateTimeConverter().toLocalDateTime(parts[4])
         val reservationEnd = LocalDateTimeConverter().toLocalDateTime(parts[5])
         val distance = parts[6].toDouble()
-        val borrowPurpose = Purpose.valueOf(parts[7])
+        val borrowPurpose = parts[7]
 
         return User(
             id,
@@ -56,32 +56,6 @@ class BikeStatusConverter {
         return value.toString()
     }
 }
-
-class DepartmentConverter {
-    @TypeConverter
-    fun fromString(value: String?): Department {
-        return Department.valueOf(value.toString())
-    }
-
-    @TypeConverter
-    fun toString(value: Department): String {
-        return value.toString()
-    }
-}
-
-
-class PurposeConverter {
-    @TypeConverter
-    fun fromString(value: String?): Purpose {
-        return Purpose.valueOf(value.toString())
-    }
-
-    @TypeConverter
-    fun toString(value: Purpose): String {
-        return value.toString()
-    }
-}
-
 
 class LocalDateTimeConverter {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME

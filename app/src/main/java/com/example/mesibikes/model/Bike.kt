@@ -32,28 +32,12 @@ data class User(
     val id: Int?,
     val name: String?,
     val surname: String?,
-    val department: Department?,
+    val department:  String?,
     @Nullable
     val reservationStart: LocalDateTime?,
     @Nullable
     val reservationEnd: LocalDateTime?,
     val distance: Double? = 0.0,
-    val borrowPurpose: Purpose
+    val borrowPurpose: String?
 )
-
-
-enum class Department {
-    DEVELOPMENT,
-    SALES,
-    MARKETING,
-    PRODUCTION
-}
-
-
-
-
-enum class Purpose {
-    WORK,
-    PRIVATE
-}
 

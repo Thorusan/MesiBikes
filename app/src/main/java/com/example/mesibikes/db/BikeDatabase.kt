@@ -6,8 +6,6 @@ import androidx.room.TypeConverters
 
 @TypeConverters(
     LocalDateTimeConverter::class,
-    PurposeConverter::class,
-    DepartmentConverter::class,
     BikeStatusConverter::class,
     UserConverter::class
 )
