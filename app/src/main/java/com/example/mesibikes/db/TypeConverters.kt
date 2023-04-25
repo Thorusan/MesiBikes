@@ -9,7 +9,6 @@ class UserConverter {
 
     @TypeConverter
     fun fromString(value: String): User? {
-
         val parts = value.split(",")
 
         if (parts[0] == "null") return null
@@ -21,7 +20,7 @@ class UserConverter {
         val reservationStart = LocalDateTimeConverter().toLocalDateTime(parts[4])
         val reservationEnd = LocalDateTimeConverter().toLocalDateTime(parts[5])
         val distance = parts[6].toDouble()
-        val borrowPurpose = Purpose.valueOf(parts.get(7))
+        val borrowPurpose = Purpose.valueOf(parts[7])
 
         return User(
             id,
@@ -34,13 +33,6 @@ class UserConverter {
             borrowPurpose
         )
     }
-
-
-    /*@TypeConverter
-    fun fromLocalDateTime(date: LocalDateTime?): String? {
-        return date?.format(formatter)
-    }*/
-
 
     @TypeConverter
     fun toString(value: User?): String {

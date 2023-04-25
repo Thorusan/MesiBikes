@@ -2,9 +2,9 @@ package com.example.mesibikes.application
 
 import android.app.Application
 import androidx.room.Room
-import com.example.mesibikes.bikeViewModelModule
 import com.example.mesibikes.db.BikeDatabase
-import com.example.mesibikes.repositoryModule
+import com.example.mesibikes.model.repositoryModule
+import com.example.mesibikes.vm.bikeViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

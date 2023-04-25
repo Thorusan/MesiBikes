@@ -1,4 +1,4 @@
-package com.example.mesibikes
+package com.example.mesibikes.model
 
 import com.example.mesibikes.db.Bike
 import com.example.mesibikes.db.BikeDao
