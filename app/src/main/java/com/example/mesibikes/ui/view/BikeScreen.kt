@@ -3,7 +3,6 @@ package com.example.mesibikes.ui.view
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,18 +42,17 @@ fun BikeScreen(
     bikes: List<Bike>,
     onAddBike: (bike: Bike) -> Unit,
 ) {
-    /*var isList by remember { mutableStateOf(true) }
+    var isMainPage by remember { mutableStateOf(true) }
 
-    if (isList) {
-        FirstPage(bikes = bikes) {
-            isList = false
+    if (isMainPage) {
+        MainPage(bikes = bikes) {
+            isMainPage = false
         }
     } else {
-        SecondPage()
-    }*/
-
-    DetailPage()
-
+        DetailPage(onAddReservation = {
+            isMainPage = true
+        })
+    }
 }
 
 @Composable
@@ -81,6 +79,7 @@ fun MainPage(
         Button(
             onClick = { onShowDetail() },
             modifier = Modifier
+                .padding(16.dp)
                 .align(Alignment.BottomCenter)
                 .height(58.dp)
                 .fillMaxWidth()
@@ -92,7 +91,9 @@ fun MainPage(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailPage() {
+fun DetailPage(
+    onAddReservation: () -> Unit
+) {
     val mandatoryFieldText = stringResource(R.string.field_mandatory)
     var isFormValid by remember { mutableStateOf(false) }
     var textBorrower by remember { mutableStateOf("") }
@@ -170,13 +171,13 @@ fun DetailPage() {
             Spacer(modifier = Modifier.padding(vertical = 16.dp))
 
             Slider(onValueChange = {
-                    distance = it
+                distance = it
             })
 
 
             TextField(
                 value = "${String.format("%.2f", distance)} km",
-                onValueChange = {  },
+                onValueChange = { },
                 enabled = false,
                 label = { Text("Razdalja") }
             )
@@ -201,20 +202,27 @@ fun DetailPage() {
                 if (textBorrower.isBlank()) {
                     errorBorrower = mandatoryFieldText
                     isFormValid = false
+                } else {
+                    isFormValid = true
                 }
 
                 if (textDepartment.isBlank()) {
                     errorDepartment = mandatoryFieldText
                     isFormValid = false
+                } else {
+                    isFormValid = true
                 }
 
                 if (textPurpose.isBlank()) {
                     errorPurpose = mandatoryFieldText
                     isFormValid = false
+                } else {
+                    isFormValid = true
                 }
 
                 if (isFormValid) {
-                    // TODO: Add Bike to database
+                    // TODO: Add reservation to database
+                    onAddReservation()
                 }
             },
             modifier = Modifier
@@ -252,6 +260,7 @@ fun ItemBike(bike: Bike) {
 fun OrderScreenPreview() {
     MesiBikesTheme {
         BikeScreen(
-            bikesList,) {}
+            bikesList,
+        ) {}
     }
 }
