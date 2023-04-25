@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mesibikes.db.Bike
 import com.example.mesibikes.model.BikeDefaultRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -23,8 +25,10 @@ class BikeViewModel(private val repository: BikeDefaultRepository) : ViewModel()
 
     init {
         viewModelScope.launch {
-            repository.getAllBikes().collect {
-                _bikes.value = it
+            withContext(Dispatchers.IO) {
+                repository.getAllBikes().collect {
+                    _bikes.value = it
+                }
             }
         }
     }

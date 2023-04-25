@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MesiBikes</string>
+    <string name="field_mandatory">Polje je obvezno</string>
 </resources>

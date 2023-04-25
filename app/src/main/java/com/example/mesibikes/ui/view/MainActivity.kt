@@ -8,13 +8,14 @@ import androidx.lifecycle.coroutineScope
 import com.example.mesibikes.model.bikesList
 import com.example.mesibikes.ui.theme.MesiBikesTheme
 import com.example.mesibikes.vm.BikeViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-    private val bikeViewModel by viewModel<BikeViewModel>()
-
+    private val viewModel by viewModel<BikeViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MesiBikesTheme {
                 BikeScreen(
-                    bikes = bikeViewModel.bikes.collectAsState().value,
+                    bikes = viewModel.bikes.collectAsState().value,
                     onAddBike = {
 
                 })
@@ -34,8 +35,10 @@ class MainActivity : ComponentActivity() {
 
     private fun addBikes() {
         lifecycle.coroutineScope.launch {
-            bikesList.forEach {
-                bikeViewModel.addBike(it)
+            withContext(Dispatchers.IO) {
+                bikesList.forEach {
+                    viewModel.addBike(it)
+                }
             }
         }
     }

@@ -3,9 +3,7 @@ package com.example.mesibikes.db
 import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Entity(tableName = "bikes_table")
 
@@ -23,7 +21,7 @@ data class Bike(
     val reservationNr: Int
 )
 
-enum class BikeStatus(status: String) {
+enum class BikeStatus(val description: String) {
     AVAILABLE("Na voljo"),
     NOT_AVAILABLE("Izposojeno")
 }
