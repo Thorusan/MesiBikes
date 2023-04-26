@@ -1,5 +1,6 @@
 package com.example.mesibikes.ui.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -34,6 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,17 +54,26 @@ fun BikeScreen(
     bikes: List<Bike>,
     onAddBike: (bike: Bike, user: User) -> Unit,
 ) {
+
+
     val isMainPage = remember { mutableStateOf(true) }
     val isDetailsPage = remember { mutableStateOf(false) }
     val chosenBike = remember { mutableStateOf<Bike?>(null) }
 
-    if (isMainPage.value && !isDetailsPage.value) {
+    BackHandler {
+        isMainPage.value = true
+        isDetailsPage.value = false
+    }
+
+    if (isMainPage.value) {
         MainPage(bikes = bikes,
             onAddReservation = {
                 isMainPage.value = false
+                isDetailsPage.value = false
                 chosenBike.value = it
             },
             onBikeDetails = {
+                isMainPage.value = false
                 isDetailsPage.value = true
                 chosenBike.value = it
             }
@@ -267,7 +280,8 @@ fun DetailsPage(
             Text(
                 modifier = Modifier
                     .padding(start = 8.dp, top = 16.dp),
-                text = "Ime kolesa: "
+                text = "Ime kolesa: ",
+                fontWeight = FontWeight.Bold
             )
 
             Text(
@@ -281,7 +295,8 @@ fun DetailsPage(
             Text(
                 modifier = Modifier
                     .padding(start = 8.dp, top = 16.dp),
-                text = "Zadnja rezervacija: "
+                text = "Zadnja rezervacija: ",
+                fontWeight = FontWeight.Bold
             )
 
             Text(
@@ -300,7 +315,8 @@ fun DetailsPage(
             Text(
                 modifier = Modifier
                     .padding(start = 8.dp, top = 16.dp),
-                text = "Naslednja rezervacija: "
+                text = "Naslednja rezervacija: ",
+                fontWeight = FontWeight.Bold
             )
 
             Text(
@@ -318,7 +334,8 @@ fun DetailsPage(
             Text(
                 modifier = Modifier
                     .padding(start = 8.dp, top = 16.dp),
-                text = "Št. prevoženih kilometrov: "
+                text = "Št. prevoženih kilometrov: ",
+                fontWeight = FontWeight.Bold
             )
 
             Text(
@@ -332,7 +349,8 @@ fun DetailsPage(
             Text(
                 modifier = Modifier
                     .padding(start = 8.dp, top = 16.dp),
-                text = "Število rezervacij: "
+                text = "Število rezervacij: ",
+                fontWeight = FontWeight.Bold
             )
 
             Text(
@@ -366,31 +384,40 @@ fun ItemBike(
             text = bike.status.description
         )
 
-        Button(
-            onClick = { onAddReservation() },
-            modifier = Modifier
-                .padding(12.dp)
-                .height(40.dp)
-        ) {
-            Text(text = "Rezervacija", fontSize = 16.sp)
-        }
-
-        Button(
-            onClick = { /* Do something */ },
-            modifier = Modifier
-                .padding(12.dp)
-
-        ) {
-            IconButton(
-                modifier = Modifier.size(32.dp),
-                onClick = { onBikeDetails() }) {
-                Icon(
-                    Icons.Filled.Info,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
+        Column() {
+            Button(
+                onClick = { onAddReservation() },
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .width(140.dp)
+                    .height(36.dp)
+            ) {
+                Text(text = "Rezervacija", fontSize = 16.sp)
             }
+
+            Button(
+                onClick = { onBikeDetails() },
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .width(140.dp)
+                    .height(36.dp)
+            ) {
+                IconButton(
+                    modifier = Modifier.size(32.dp),
+                    onClick = {  }) {
+                    Icon(
+                        Icons.Filled.Info,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+
+                    )
+                }
+                Text(text = "Info", fontSize = 16.sp)
+            }
+
         }
+
+
     }
 }
 
