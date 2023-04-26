@@ -11,13 +11,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -38,6 +43,7 @@ import com.example.mesibikes.db.Bike
 import com.example.mesibikes.db.User
 import com.example.mesibikes.ui.theme.MesiBikesTheme
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun BikeScreen(
@@ -45,25 +51,35 @@ fun BikeScreen(
     onAddBike: (bike: Bike, user: User) -> Unit,
 ) {
     val isMainPage = remember { mutableStateOf(true) }
+    val isDetailsPage = remember { mutableStateOf(false) }
     val chosenBike = remember { mutableStateOf<Bike?>(null) }
 
-    if (isMainPage.value) {
-        MainPage(bikes = bikes) {
-            isMainPage.value = false
-            chosenBike.value = it
-        }
-    } else {
-        DetailPage(chosenBike.value!!, onAddReservation = { user ->
+    if (isMainPage.value && !isDetailsPage.value) {
+        MainPage(bikes = bikes,
+            onAddReservation = {
+                isMainPage.value = false
+                chosenBike.value = it
+            },
+            onBikeDetails = {
+                isDetailsPage.value = true
+                chosenBike.value = it
+            }
+        )
+    } else if (!isMainPage.value && !isDetailsPage.value) {
+        ReservationPage(onReservationAdded = { user ->
             isMainPage.value = true
             onAddBike(chosenBike.value!!, user)
         })
+    } else {
+        DetailsPage(chosenBike.value!!)
     }
 }
 
 @Composable
 fun MainPage(
     bikes: List<Bike>,
-    onAddReservation: (bike: Bike) -> Unit
+    onAddReservation: (bike: Bike) -> Unit,
+    onBikeDetails: (bike: Bike) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxHeight()) {
         LazyColumn(
@@ -76,21 +92,20 @@ fun MainPage(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             items(bikes) { bike ->
-                ItemBike(bike) {
-                    onAddReservation(bike)
-                }
+                ItemBike(bike,
+                    onAddReservation = { onAddReservation(bike) },
+                    onBikeDetails = { onBikeDetails(bike) }
+                )
                 Divider(modifier = Modifier.padding(top = 8.dp))
             }
         }
-
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailPage(
-    bike: Bike,
-    onAddReservation: (user: User) -> Unit
+fun ReservationPage(
+    onReservationAdded: (user: User) -> Unit
 ) {
     val mandatoryFieldText = stringResource(R.string.field_mandatory)
     var isFormValid by remember { mutableStateOf(false) }
@@ -228,7 +243,7 @@ fun DetailPage(
                         borrowPurpose = textPurpose
                     )
 
-                    onAddReservation(user)
+                    onReservationAdded(user)
                 }
             },
             modifier = Modifier
@@ -236,7 +251,95 @@ fun DetailPage(
                 .height(58.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = "DODAJ", fontSize = 20.sp)
+            Text(text = "DODAJ", fontSize = 16.sp)
+        }
+    }
+}
+
+@Composable
+fun DetailsPage(
+    bike: Bike
+) {
+    val formatter = DateTimeFormatter.ofPattern("d.MMM.yyyy 'ob' h:mm")
+
+    Column {
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = "Ime kolesa: "
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = bike.name
+            )
+        }
+
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = "Zadnja rezervacija: "
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = if (bike.lastReservation != null) {
+                    bike.lastReservation!!.format(formatter)
+                } else {
+                    "/"
+                }
+
+            )
+        }
+
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = "Naslednja rezervacija: "
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = if (bike.nextReservation != null) {
+                    bike.nextReservation!!.format(formatter)
+                } else {
+                    "/"
+                }
+            )
+        }
+
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = "Št. prevoženih kilometrov: "
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = "${String.format("%.2f", bike.distance)} km"
+            )
+        }
+
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = "Število rezervacij: "
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 16.dp),
+                text = bike.reservationNr.toString()
+            )
         }
     }
 }
@@ -244,7 +347,8 @@ fun DetailPage(
 @Composable
 fun ItemBike(
     bike: Bike,
-    onAddReservation: () -> Unit
+    onAddReservation: () -> Unit,
+    onBikeDetails: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -253,14 +357,12 @@ fun ItemBike(
         Text(
             modifier = Modifier
                 .padding(start = 8.dp, top = 16.dp),
-
             text = bike.name
         )
 
         Text(
             modifier = Modifier
                 .padding(start = 8.dp, top = 16.dp),
-
             text = bike.status.description
         )
 
@@ -268,14 +370,29 @@ fun ItemBike(
             onClick = { onAddReservation() },
             modifier = Modifier
                 .padding(12.dp)
-
                 .height(40.dp)
         ) {
-            Text(text = "DODAJ", fontSize = 20.sp)
+            Text(text = "Rezervacija", fontSize = 16.sp)
+        }
+
+        Button(
+            onClick = { /* Do something */ },
+            modifier = Modifier
+                .padding(12.dp)
+
+        ) {
+            IconButton(
+                modifier = Modifier.size(32.dp),
+                onClick = { onBikeDetails() }) {
+                Icon(
+                    Icons.Filled.Info,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
         }
     }
 }
-
 
 @Preview(device = Devices.PIXEL_4, showBackground = true, showSystemUi = true)
 @Composable

@@ -7,7 +7,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.coroutineScope
 import com.example.mesibikes.ui.theme.MesiBikesTheme
 import com.example.mesibikes.vm.BikeViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +25,9 @@ class MainActivity : ComponentActivity() {
                     bikes = viewModel.bikes.collectAsState().value,
                     onAddBike = { bike, user ->
                         lifecycle.coroutineScope.launch {
-                            viewModel.addReservation(bike, user)
+                            withContext(Dispatchers.IO) {
+                                viewModel.addReservation(bike, user)
+                            }
                         }
                     }
                 )

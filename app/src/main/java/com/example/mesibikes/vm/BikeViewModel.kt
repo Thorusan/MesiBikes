@@ -49,11 +49,11 @@ class BikeViewModel(private val repository: BikeDefaultRepository) : ViewModel()
     }
 
     suspend fun addReservation(bike: Bike, user: User) {
-        bike.distance  = bike.distance + user.distance
-        bike.lastReservation = user.reservationEnd
-        bike.nextReservation = user.reservationStart
         bike.status = BikeStatus.NOT_AVAILABLE
         bike.user = user
+        bike.lastReservation = user.reservationEnd
+        bike.nextReservation = user.reservationStart
+        bike.distance  = bike.distance + user.distance
 
         repository.updateBike(bike)
         repository.incrementReservations(bike.name)
