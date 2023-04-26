@@ -105,7 +105,7 @@ fun DateTimePicker(
     val datePicker = DatePickerDialog(
         context,
         { _: DatePicker, selectedYearDialog: Int, selectedMonthDialog: Int, selectedDayOfMonthDialog: Int ->
-            selectedDateFrom = "${selectedDayOfMonthDialog + 1}.$selectedMonthDialog.$selectedYearDialog"
+            selectedDateFrom = "${selectedDayOfMonthDialog}.$selectedMonthDialog.$selectedYearDialog"
             selectedYear = selectedYearDialog
             selectedMonth = selectedMonthDialog
             selectedDay = selectedDayOfMonthDialog
