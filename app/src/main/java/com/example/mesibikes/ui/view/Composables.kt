@@ -71,18 +71,19 @@ fun DateTimePicker(
     modifier: Modifier = Modifier
 ) {
     val calendar = Calendar.getInstance()
-
-
-
     val hour = calendar[Calendar.HOUR_OF_DAY]
     val minute = calendar[Calendar.MINUTE]
+
+    val year = calendar[Calendar.YEAR]
+    val month = calendar[Calendar.MONTH]
+    val day = calendar[Calendar.DAY_OF_MONTH]
 
     var selectedDateFrom by remember { mutableStateOf(selectedDateStart) }
     var selectedTimeFrom by remember { mutableStateOf(selectedTimeStart) }
 
-    var selectedYear by remember { mutableStateOf( calendar[Calendar.YEAR]) }
-    var selectedMonth by remember { mutableStateOf(calendar[Calendar.MONTH]) }
-    var selectedDay by remember { mutableStateOf(calendar[Calendar.DAY_OF_MONTH]) }
+    var selectedYear by remember { mutableStateOf( year) }
+    var selectedMonth by remember { mutableStateOf(month) }
+    var selectedDay by remember { mutableStateOf(day) }
 
     val timePicker = TimePickerDialog(
         context,
@@ -102,17 +103,17 @@ fun DateTimePicker(
 
     val datePicker = DatePickerDialog(
         context,
-        { _: DatePicker, selectedYearDialog: Int, selectedMonthDialog: Int, selectedDayOfMonthDialog: Int ->
-            selectedDateFrom = "${selectedDayOfMonthDialog}.${selectedMonthDialog+1}.$selectedYearDialog"
+        { _: DatePicker, selectedYearDialog: Int, selectedMonthDialog: Int, selectedDayDialog: Int ->
+            selectedDateFrom = "${day}.${month+1}.$year"
             selectedYear = selectedYearDialog
             selectedMonth = selectedMonthDialog + 1
-            selectedDay = selectedDayOfMonthDialog
+            selectedDay = selectedDayDialog
 
             timePicker.show()
         },
-        selectedYear,
-        selectedMonth,
-        selectedDay
+        year,
+        month,
+        day
     )
 
     Box(modifier = modifier.fillMaxWidth()) {
@@ -132,7 +133,6 @@ fun DateTimePicker(
         }
     }
 }
-
 
 @Composable
 fun Slider(

@@ -13,17 +13,17 @@ class UserConverter {
 
         if (parts[0] == "null") return null
 
-        val id = Integer.parseInt(parts[0])
-        val name = parts[1]
-        val surname = parts[2]
-        val department = parts[3]
-        val reservationStart = LocalDateTimeConverter().toLocalDateTime(parts[4])
-        val reservationEnd = LocalDateTimeConverter().toLocalDateTime(parts[5])
-        val distance = parts[6].toDouble()
-        val borrowPurpose = parts[7]
+        //val id = Integer.parseInt(parts[0])
+        val name = parts[0]
+        val surname = parts[1]
+        val department = parts[2]
+        val reservationStart = LocalDateTimeConverter().toLocalDateTime(parts[3])
+        val reservationEnd = LocalDateTimeConverter().toLocalDateTime(parts[4])
+        val distance = parts[5].toDouble()
+        val borrowPurpose = parts[6]
 
         return User(
-            id,
+            //id,
             name,
             surname,
             department,
@@ -36,12 +36,13 @@ class UserConverter {
 
     @TypeConverter
     fun toString(value: User?): String {
-        return "${value?.id}," +
-                "${value?.name}," +
+        return "${value?.name}," +
                 "${value?.surname}," +
                 "${value?.department}," +
                 "${value?.reservationStart?.toString()}," +
-                "${value?.reservationEnd?.toString()}"
+                "${value?.reservationEnd?.toString()}," +
+                "${value?.distance?.toString()}," +
+                "${value?.borrowPurpose}"
     }
 }
 

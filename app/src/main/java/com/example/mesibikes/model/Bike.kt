@@ -27,8 +27,6 @@ enum class BikeStatus(val description: String) {
 
 @Entity(tableName = "user_table")
 data class User(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int?,
     val name: String?,
     val surname: String?,
     val department:  String?,

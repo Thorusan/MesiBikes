@@ -15,7 +15,6 @@ interface BikeDao {
     @Update
     suspend fun update(bike: Bike)
 
-
     @Query("DELETE FROM bikes_table")
     suspend fun deleteAllBikes()
 

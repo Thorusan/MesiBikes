@@ -1,8 +1,10 @@
 package com.example.mesibikes.ui.view
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,24 +35,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mesibikes.R
 import com.example.mesibikes.db.Bike
-import com.example.mesibikes.model.bikesList
+import com.example.mesibikes.db.User
 import com.example.mesibikes.ui.theme.MesiBikesTheme
 import java.time.LocalDateTime
 
 @Composable
 fun BikeScreen(
     bikes: List<Bike>,
-    onAddBike: (bike: Bike) -> Unit,
+    onAddBike: (bike: Bike, user: User) -> Unit,
 ) {
     val isMainPage = remember { mutableStateOf(true) }
+    val chosenBike = remember { mutableStateOf<Bike?>(null) }
 
     if (isMainPage.value) {
         MainPage(bikes = bikes) {
             isMainPage.value = false
+            chosenBike.value = it
         }
     } else {
-        DetailPage(onAddReservation = {
+        DetailPage(chosenBike.value!!, onAddReservation = { user ->
             isMainPage.value = true
+            onAddBike(chosenBike.value!!, user)
         })
     }
 }
@@ -58,7 +63,7 @@ fun BikeScreen(
 @Composable
 fun MainPage(
     bikes: List<Bike>,
-    onShowDetail: () -> Unit
+    onAddReservation: (bike: Bike) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxHeight()) {
         LazyColumn(
@@ -71,28 +76,21 @@ fun MainPage(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             items(bikes) { bike ->
-                ItemBike(bike)
-                Divider(modifier = Modifier.padding(top = 16.dp))
+                ItemBike(bike) {
+                    onAddReservation(bike)
+                }
+                Divider(modifier = Modifier.padding(top = 8.dp))
             }
         }
 
-        Button(
-            onClick = { onShowDetail() },
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomCenter)
-                .height(58.dp)
-                .fillMaxWidth()
-        ) {
-            Text(text = "DODAJ", fontSize = 20.sp)
-        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailPage(
-    onAddReservation: () -> Unit
+    bike: Bike,
+    onAddReservation: (user: User) -> Unit
 ) {
     val mandatoryFieldText = stringResource(R.string.field_mandatory)
     var isFormValid by remember { mutableStateOf(false) }
@@ -217,8 +215,20 @@ fun DetailPage(
                 }
 
                 if (isFormValid) {
-                    // TODO: Add reservation to database
-                    onAddReservation()
+                    val borrowerSplittedText = textBorrower.split(" ")
+
+                    val user = User(
+                        name = borrowerSplittedText[0].trim(),
+                        surname = borrowerSplittedText.subList(1, borrowerSplittedText.size)
+                            .toString(),
+                        department = textDepartment,
+                        reservationStart = selectedDateTimeFrom,
+                        reservationEnd = selectedDateTimeTo,
+                        distance = distance.toDouble(),
+                        borrowPurpose = textPurpose
+                    )
+
+                    onAddReservation(user)
                 }
             },
             modifier = Modifier
@@ -232,21 +242,37 @@ fun DetailPage(
 }
 
 @Composable
-fun ItemBike(bike: Bike) {
-    Box(modifier = Modifier.fillMaxWidth()) {
+fun ItemBike(
+    bike: Bike,
+    onAddReservation: () -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
             modifier = Modifier
-                .padding(start = 8.dp, top = 12.dp)
-                .align(Alignment.CenterStart),
+                .padding(start = 8.dp, top = 16.dp),
+
             text = bike.name
         )
 
         Text(
             modifier = Modifier
-                .padding(start = 8.dp, top = 12.dp)
-                .align(Alignment.CenterEnd),
+                .padding(start = 8.dp, top = 16.dp),
+
             text = bike.status.description
         )
+
+        Button(
+            onClick = { onAddReservation() },
+            modifier = Modifier
+                .padding(12.dp)
+
+                .height(40.dp)
+        ) {
+            Text(text = "DODAJ", fontSize = 20.sp)
+        }
     }
 }
 
@@ -255,8 +281,8 @@ fun ItemBike(bike: Bike) {
 @Composable
 fun OrderScreenPreview() {
     MesiBikesTheme {
-        BikeScreen(
+        /*BikeScreen(
             bikesList,
-        ) {}
+        ) {}*/
     }
 }
