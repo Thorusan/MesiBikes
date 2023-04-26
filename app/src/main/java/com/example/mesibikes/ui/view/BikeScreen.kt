@@ -1,5 +1,6 @@
 package com.example.mesibikes.ui.view
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mesibikes.R
 import com.example.mesibikes.db.Bike
+import com.example.mesibikes.db.BikeStatus
 import com.example.mesibikes.db.User
 import com.example.mesibikes.ui.theme.MesiBikesTheme
 import java.time.LocalDateTime
@@ -54,8 +55,6 @@ fun BikeScreen(
     bikes: List<Bike>,
     onAddBike: (bike: Bike, user: User) -> Unit,
 ) {
-
-
     val isMainPage = remember { mutableStateOf(true) }
     val isDetailsPage = remember { mutableStateOf(false) }
     val chosenBike = remember { mutableStateOf<Bike?>(null) }
@@ -242,6 +241,17 @@ fun ReservationPage(
                     isFormValid = true
                 }
 
+                if (selectedDateTimeTo.isBefore(selectedDateTimeFrom)
+                    || selectedDateTimeTo.isEqual(selectedDateTimeFrom)) {
+                    isFormValid = false
+                    Toast.makeText(
+                        context,
+                        "'Datum Do' mora biti večji od 'Datuma Od' !",
+                        Toast.LENGTH_SHORT).show()
+                }else {
+                    isFormValid = true
+                }
+
                 if (isFormValid) {
                     val borrowerSplittedText = textBorrower.split(" ")
 
@@ -384,7 +394,7 @@ fun ItemBike(
             text = bike.status.description
         )
 
-        Column() {
+        Column {
             Button(
                 onClick = { onAddReservation() },
                 modifier = Modifier
@@ -404,13 +414,13 @@ fun ItemBike(
             ) {
                 IconButton(
                     modifier = Modifier.size(32.dp),
-                    onClick = {  }) {
+                    onClick = { onBikeDetails() }) {
                     Icon(
                         Icons.Filled.Info,
                         contentDescription = null,
                         modifier = Modifier.size(32.dp),
 
-                    )
+                        )
                 }
                 Text(text = "Info", fontSize = 16.sp)
             }

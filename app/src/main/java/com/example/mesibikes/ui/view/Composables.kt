@@ -4,16 +4,12 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.DatePicker
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -28,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.mesibikes.model.bikesList
 import com.example.mesibikes.ui.theme.MesiBikesTheme
 import java.time.LocalDateTime
 import java.util.Calendar
@@ -78,8 +73,8 @@ fun DateTimePicker(
     val month = calendar[Calendar.MONTH]
     val day = calendar[Calendar.DAY_OF_MONTH]
 
-    var selectedDateFrom by remember { mutableStateOf(selectedDateStart) }
-    var selectedTimeFrom by remember { mutableStateOf(selectedTimeStart) }
+    var selectedDate by remember { mutableStateOf(selectedDateStart) }
+    var selectedTime by remember { mutableStateOf(selectedTimeStart) }
 
     var selectedYear by remember { mutableStateOf( year) }
     var selectedMonth by remember { mutableStateOf(month) }
@@ -88,7 +83,8 @@ fun DateTimePicker(
     val timePicker = TimePickerDialog(
         context,
         { _, selectedHour: Int, selectedMinute: Int ->
-            selectedTimeFrom = "$selectedHour:$selectedMinute"
+            selectedTime = "$selectedHour:$selectedMinute"
+
             onDateTimeSelected(
                 LocalDateTime.of(
                     selectedYear,
@@ -104,7 +100,8 @@ fun DateTimePicker(
     val datePicker = DatePickerDialog(
         context,
         { _: DatePicker, selectedYearDialog: Int, selectedMonthDialog: Int, selectedDayDialog: Int ->
-            selectedDateFrom = "${day}.${month+1}.$year"
+            selectedDate = "${selectedDayDialog}.${selectedMonthDialog+1}.$selectedYearDialog"
+
             selectedYear = selectedYearDialog
             selectedMonth = selectedMonthDialog + 1
             selectedDay = selectedDayDialog
@@ -125,10 +122,11 @@ fun DateTimePicker(
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
-            Text(text = if (selectedDateFrom.isEmpty()) {
+
+            Text(text = if (selectedDate.isEmpty()) {
                 "Izberi datum / čas"
             } else {
-                "$selectedDateFrom $selectedTimeFrom"
+                "$selectedDate $selectedTime"
             })
         }
     }

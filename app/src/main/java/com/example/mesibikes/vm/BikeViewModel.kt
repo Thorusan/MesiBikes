@@ -1,6 +1,5 @@
 package com.example.mesibikes.vm
 
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mesibikes.db.Bike
@@ -15,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import javax.net.ssl.SSLEngineResult.Status
+import java.time.LocalDateTime
 
 val bikeViewModelModule = module {
     viewModel {
@@ -37,6 +36,20 @@ class BikeViewModel(private val repository: BikeDefaultRepository) : ViewModel()
                             addBike(it)
                         }
                     } else {
+                        bikes.forEach { bike ->
+                            val today = LocalDateTime.now()
+
+                            val isBikeNotAvailable = bike.user != null
+                                    && today.isAfter(bike.user?.reservationStart)
+                                    && today.isBefore(bike.user?.reservationEnd)
+
+                            if (isBikeNotAvailable) {
+                                bike.status = BikeStatus.NOT_AVAILABLE
+                            } else {
+                                bike.status = BikeStatus.AVAILABLE
+                            }
+                        }
+
                         _bikes.value = bikes
                     }
                 }
@@ -49,11 +62,10 @@ class BikeViewModel(private val repository: BikeDefaultRepository) : ViewModel()
     }
 
     suspend fun addReservation(bike: Bike, user: User) {
-        bike.status = BikeStatus.NOT_AVAILABLE
         bike.user = user
-        bike.lastReservation = user.reservationEnd
+        bike.lastReservation = LocalDateTime.now()
         bike.nextReservation = user.reservationStart
-        bike.distance  = bike.distance + user.distance
+        bike.distance = bike.distance + user.distance
 
         repository.updateBike(bike)
         repository.incrementReservations(bike.name)
