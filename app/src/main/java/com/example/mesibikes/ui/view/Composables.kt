@@ -107,8 +107,8 @@ fun DateTimePicker(
         { _: DatePicker, selectedYearDialog: Int, selectedMonthDialog: Int, selectedDayOfMonthDialog: Int ->
             selectedDateFrom = "${selectedDayOfMonthDialog + 1}.$selectedMonthDialog.$selectedYearDialog"
             selectedYear = selectedYearDialog
-            selectedMonth = selectedDayOfMonthDialog
-            selectedDay = selectedYearDialog
+            selectedMonth = selectedMonthDialog
+            selectedDay = selectedDayOfMonthDialog
 
             timePicker.show()
         },
