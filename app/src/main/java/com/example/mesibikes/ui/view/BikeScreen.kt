@@ -42,15 +42,15 @@ fun BikeScreen(
     bikes: List<Bike>,
     onAddBike: (bike: Bike) -> Unit,
 ) {
-    var isMainPage by remember { mutableStateOf(true) }
+    val isMainPage = remember { mutableStateOf(true) }
 
-    if (isMainPage) {
+    if (isMainPage.value) {
         MainPage(bikes = bikes) {
-            isMainPage = false
+            isMainPage.value = false
         }
     } else {
         DetailPage(onAddReservation = {
-            isMainPage = true
+            isMainPage.value = true
         })
     }
 }
@@ -114,8 +114,6 @@ fun DetailPage(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
-
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -174,14 +172,12 @@ fun DetailPage(
                 distance = it
             })
 
-
             TextField(
                 value = "${String.format("%.2f", distance)} km",
                 onValueChange = { },
                 enabled = false,
                 label = { Text("Razdalja") }
             )
-
 
             Spacer(modifier = Modifier.padding(vertical = 16.dp))
 

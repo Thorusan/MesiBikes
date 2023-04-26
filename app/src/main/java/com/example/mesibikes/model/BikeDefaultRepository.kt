@@ -3,6 +3,7 @@ package com.example.mesibikes.model
 import com.example.mesibikes.db.Bike
 import com.example.mesibikes.db.BikeDao
 import com.example.mesibikes.db.BikeStatus
+import com.example.mesibikes.db.User
 import kotlinx.coroutines.flow.Flow
 import org.koin.dsl.module
 
@@ -18,8 +19,16 @@ class BikeDefaultRepository(private val bikeDao: BikeDao) : BikeRepository {
         bikeDao.insert(bike)
     }
 
+    override suspend fun updateBike(bike: Bike) {
+        bikeDao.insert(bike)
+    }
+
     override fun getAllBikes(): Flow<List<Bike>> {
         return bikeDao.getBikes()
+    }
+
+    override suspend fun incrementReservations(bikeId: String) {
+        bikeDao.incrementReservations(bikeId)
     }
 }
 

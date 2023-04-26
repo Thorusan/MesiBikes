@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        addBikes()
+
 
         setContent {
             MesiBikesTheme {
@@ -29,16 +29,6 @@ class MainActivity : ComponentActivity() {
                     onAddBike = {
 
                 })
-            }
-        }
-    }
-
-    private fun addBikes() {
-        lifecycle.coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                bikesList.forEach {
-                    viewModel.addBike(it)
-                }
             }
         }
     }

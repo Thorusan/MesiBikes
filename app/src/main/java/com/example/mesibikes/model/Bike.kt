@@ -6,18 +6,17 @@ import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
 @Entity(tableName = "bikes_table")
-
 data class Bike(
     @PrimaryKey(autoGenerate = false)
     val name: String,
-    val status: BikeStatus,
+    var status: BikeStatus,
     @Nullable
-    val user: User?,
+    var user: User?,
     @Nullable
-    val lastReservation: LocalDateTime?,
+    var lastReservation: LocalDateTime?,
     @Nullable
-    val nextReservation: LocalDateTime?,
-    val distance: Double,
+    var nextReservation: LocalDateTime?,
+    var distance: Double,
     val reservationNr: Int
 )
 
@@ -37,7 +36,7 @@ data class User(
     val reservationStart: LocalDateTime?,
     @Nullable
     val reservationEnd: LocalDateTime?,
-    val distance: Double? = 0.0,
+    val distance: Double = 0.0,
     val borrowPurpose: String?
 )
 
